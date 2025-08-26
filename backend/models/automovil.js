@@ -2,7 +2,7 @@
 module.exports = (sequelize, DataTypes) => {
   const Automovil = sequelize.define('Automovil', {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    places: { type: DataTypes.INTEGER, allowNull: false },
+    places: { type: DataTypes.STRING, allowNull: false },
     marca:  { type: DataTypes.STRING,  allowNull: false },
     color:  DataTypes.STRING,
     modelo: DataTypes.STRING,

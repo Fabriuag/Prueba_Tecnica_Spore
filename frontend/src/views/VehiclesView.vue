@@ -10,6 +10,7 @@
       </div>
       <div class="actions">
         <button class="btn" @click="fetchVehicles">Refrescar</button>
+        <router-link class="btn" to="/dashboard"> Volver a Panel de control </router-link>
       </div>
     </div>
 
@@ -20,7 +21,7 @@
         <div class="grid">
           <div>
             <div class="stat-label">Placas</div>
-            <input type="number" class="btn" style="width:100%" v-model.number="form.places" min="1" />
+            <input class="btn" style="width:100%" v-model.number="form.places" min="1" />
           </div>
           <div>
             <div class="stat-label">Marca</div>

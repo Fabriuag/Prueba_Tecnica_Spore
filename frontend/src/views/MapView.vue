@@ -6,7 +6,8 @@
         <p class="subtitle">Se actualiza en tiempo real con Socket.IO</p>
       </div>
       <div class="actions">
-        <router-link class="btn" to="/vehicles">Volver a lista</router-link>
+        <router-link class="btn" to="/vehicles">Volver a lista de carros</router-link>
+        <router-link class="btn" to="/dashboard">Volver al panel de control</router-link>
       </div>
     </div>
 
