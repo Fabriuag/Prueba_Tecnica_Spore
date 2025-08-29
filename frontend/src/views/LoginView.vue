@@ -1,4 +1,7 @@
 <template>
+  <div class="actions">
+    <router-link class="btn" to="/register">Registrarse</router-link>
+  </div>
   <div class="login">
     <h2>Iniciar Sesión</h2>
     <form @submit.prevent="handleLogin">

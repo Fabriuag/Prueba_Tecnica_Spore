@@ -21,7 +21,7 @@
     <section class="section">
       <h2 class="section-title">Estado</h2>
       <div class="grid">
-        <StatCard label="API" :value="apiOk ? 'OK' : '—'" subtext="/api/admin/dashboard" />
+        <StatCard :label="'API'" :value="apiOk ? 'OK' : '—'" :subtext="pingSubtext" />
         <StatCard label="Sesión" :value="isAdmin ? 'Admin' : 'Regular'" />
         <StatCard
           label="Usuarios"
@@ -96,19 +96,29 @@ const logout = () => {
   router.push('/login')
 }
 
+const pingSubtext = computed(() => (isAdmin.value ? '/api/admin/dashboard' : '/health'))
+
 /* ---- llamadas API ---- */
 const ping = async () => {
   try {
-    const { data } = await api.get('/admin/dashboard')
-    apiOk.value = !!data?.message
+    const path = isAdmin.value ? '/admin/dashboard' : '/health'
+    const cfg = isAdmin.value ? {} : { baseURL: 'http://localhost:3000' } // /health no pasa por /api
+    const { data } = await api.get(path, cfg)
+    apiOk.value = isAdmin.value ? !!data?.message : true
+    err.value = ''
   } catch (e) {
     apiOk.value = false
-    err.value = e?.response?.data?.error || 'No autorizado'
-    if ([401, 403].includes(e?.response?.status)) logout()
+    const s = e?.response?.status
+    // 401 => token inválido/expirado: cerrar sesión
+    if (s === 401) return logout()
+    // 403 => no admin: no cerrar sesión; solo mostrar mensaje
+    err.value = s === 403 ? 'No autorizado' : (e?.response?.data?.error || 'Error')
   }
 }
 
 const fetchMetrics = async () => {
+  // solo admin
+  if (!isAdmin.value) return
   try {
     const { data } = await api.get('/admin/metrics')
     metrics.value = data
@@ -137,7 +147,9 @@ const fetchRecentVehicles = async () => {
 /* ---- refresco conjunto ---- */
 const refreshAll = async () => {
   err.value = ''
-  await Promise.allSettled([ping(), fetchMetrics(), fetchRecentVehicles()])
+  const tasks = [ping(), fetchRecentVehicles()]
+  if (isAdmin.value) tasks.push(fetchMetrics())
+  await Promise.allSettled(tasks)
 }
 
 /* ---- init ---- */

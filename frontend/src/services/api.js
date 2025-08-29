@@ -16,7 +16,7 @@ api.interceptors.response.use(
     if (s === 401 || s === 403) {
       localStorage.removeItem('token')
       localStorage.removeItem('user')
-      router.push('/login')
+      import('@/router').then(({ default: router }) => router.push('/login'))
     }
     return Promise.reject(e)
   }

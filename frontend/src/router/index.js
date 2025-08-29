@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 const routes = [
   { path: '/', redirect: '/login' },
   { path: '/login', component: () => import('@/views/LoginView.vue'), meta: { requiresGuest: true } },
+  { path: '/register', component: () => import('@/views/RegisterView.vue'), meta: { requiresGuest: true }},
   { path: '/dashboard', component: () => import('@/views/DashBoardView.vue'), meta: { requiresAuth: true } }, // <- usa exactamente el nombre del archivo
   { path: '/vehicles', component: () => import('@/views/VehiclesView.vue'), meta: { requiresAuth: true } },
   { path: '/mapa', component: () => import('@/views/MapView.vue'), meta: { requiresAuth: true } }

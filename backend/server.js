@@ -24,3 +24,10 @@ const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
   console.log(`🚀 API en http://localhost:${PORT}`)
 })
+
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./src/docs/swagger');
+
+// ...
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+// listo: http://localhost:3000/docs
