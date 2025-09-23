@@ -1,26 +1,17 @@
+// src/services/api.js
 import axios from 'axios'
-import router from '@/router'
 
-const api = axios.create({ baseURL: '/api', timeout: 5000 })
-
-api.interceptors.request.use(cfg => {
-  const token = localStorage.getItem('token')
-  if (token) cfg.headers.Authorization = `Bearer ${token}`
-  return cfg
+const api = axios.create({
+  baseURL: 'http://localhost:3000/api',
 })
 
-api.interceptors.response.use(
-  r => r,
-  e => {
-    const s = e?.response?.status
-    if (s === 401 || s === 403) {
-      localStorage.removeItem('token')
-      localStorage.removeItem('user')
-      import('@/router').then(({ default: router }) => router.push('/login'))
-    }
-    return Promise.reject(e)
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
   }
-)
+  return config
+})
 
 export default api
 

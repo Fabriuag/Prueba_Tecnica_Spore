@@ -8,7 +8,7 @@ module.exports = {
     if (!adminExists[0].length) {
       await queryInterface.bulkInsert('Users', [{
         username: 'admin',
-        password: '$2b$10$EcOezI2R6UbZxP0BRS/Jw.Dkf9Ylz4j2K2eQJOP.tj4HFQWoxBpV6', // Asegúrate de usar un hash real
+        password: '$2b$10$EcOezI2R6UbZxP0BRS/Jw.Dkf9Ylz4j2K2eQJOP.tj4HFQWoxBpV6', 
         role: 'admin',
         createdAt: new Date(),
         updatedAt: new Date()

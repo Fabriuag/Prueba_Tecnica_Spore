@@ -1,8 +1,9 @@
-const { User, Automovil } = require('../../models')
+// backend/src/controllers/admin.js
+const { User, Vehicle } = require('../../models')
 
 const metrics = async (_req, res) => {
   try {
-    const [users, vehicles] = await Promise.all([User.count(), Automovil.count()])
+    const [users, vehicles] = await Promise.all([User.count(), Vehicle.count()])
     res.json({ users, vehicles, updatedAt: new Date().toISOString() })
   } catch (e) {
     console.error('metrics error:', e.message)
@@ -11,4 +12,3 @@ const metrics = async (_req, res) => {
 }
 
 module.exports = { metrics }
-

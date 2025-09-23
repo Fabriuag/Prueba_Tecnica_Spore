@@ -1,12 +1,45 @@
+// src/router/index.js
 import { createRouter, createWebHistory } from 'vue-router'
+import LoginView from '@/views/LoginView.vue'
+import DashboardView from '@/views/DashboardView.vue'
+import UsersView from '@/views/UsersView.vue'
+import VehiclesView from '@/views/VehiclesView.vue'
+import MapView from '@/views/MapView.vue'
 
 const routes = [
-  { path: '/', redirect: '/login' },
-  { path: '/login', component: () => import('@/views/LoginView.vue'), meta: { requiresGuest: true } },
-  { path: '/register', component: () => import('@/views/RegisterView.vue'), meta: { requiresGuest: true }},
-  { path: '/dashboard', component: () => import('@/views/DashBoardView.vue'), meta: { requiresAuth: true } }, // <- usa exactamente el nombre del archivo
-  { path: '/vehicles', component: () => import('@/views/VehiclesView.vue'), meta: { requiresAuth: true } },
-  { path: '/mapa', component: () => import('@/views/MapView.vue'), meta: { requiresAuth: true } }
+  {
+    path: '/',
+    redirect: '/login'
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: LoginView
+  },
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: DashboardView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/users',
+    name: 'users',
+    component: UsersView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/vehicles',
+    name: 'vehicles',
+    component: VehiclesView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/map',
+    name: 'map',
+    component: MapView,
+    meta: { requiresAuth: true }
+  }
 ]
 
 const router = createRouter({
@@ -14,14 +47,15 @@ const router = createRouter({
   routes
 })
 
+// Protección de rutas
+router.beforeEach((to, from, next) => {
+  const isAuthenticated = !!localStorage.getItem('token')
 
-router.beforeEach((to, _from, next) => {
-  const token = localStorage.getItem('token')
-  const user = JSON.parse(localStorage.getItem('user') || 'null')
-  if (to.meta.requiresAuth && !token) return next('/login')
-  if (to.meta.requiresGuest && token) return next('/dashboard')
-  if (to.meta.requiresAdmin && user?.role !== 'admin') return next('/dashboard')
-  next()
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    next('/login')
+  } else {
+    next()
+  }
 })
 
 export default router

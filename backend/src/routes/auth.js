@@ -1,3 +1,6 @@
+// =======================
+// routes/auth.js (restaurado a antes de "olvidé contraseña")
+// =======================
 const express = require('express')
 const router = express.Router()
 const { register, login } = require('../controllers/auth')
@@ -22,7 +25,7 @@ const { register, login } = require('../controllers/auth')
  *       401:
  *         description: Credenciales inválidas
  */
-router.post('/login', login);
+router.post('/login', login)
 
 /**
  * @swagger
@@ -50,7 +53,6 @@ router.post('/login', login);
  *             schema: { $ref: '#/components/schemas/LoginResponse' }
  *       400: { description: Error de validación }
  */
-router.post('/register', register);
-
+router.post('/register', register)
 
 module.exports = router

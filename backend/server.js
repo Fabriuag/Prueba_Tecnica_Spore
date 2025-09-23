@@ -2,6 +2,7 @@
 require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
+const http = require('http')
 
 const app = express()
 app.use(express.json())
@@ -9,25 +10,33 @@ app.use(cors({ origin: ['http://localhost:5173'], credentials: true }))
 
 // Rutas
 const authRoutes = require('./src/routes/auth')
-const adminRoutes = require('./src/routes/admin')          // si no existe, comenta esta línea y el app.use
-const automovilRoutes = require('./src/routes/automovil')
+const adminRoutes = require('./src/routes/admin')
+const vehicleRoutes = require('./src/routes/vehicle')
+const userRoutes = require('./src/routes/user')
 
 app.use('/api/auth', authRoutes)
-app.use('/api/admin', adminRoutes)                        // comenta si no tienes adminRoutes
-app.use('/api/automoviles', automovilRoutes)
+app.use('/api/admin', adminRoutes)
+app.use('/api/vehicles', vehicleRoutes)
+app.use('/api/users', userRoutes)
 
-// Health check
+app.use('/api/automoviles', vehicleRoutes) // alias temporal
 app.get('/health', (_req, res) => res.json({ ok: true }))
 
-// Arranque (OJO: app.listen, NO server.listen)
+// Swagger
+const swaggerUi = require('swagger-ui-express')
+const swaggerSpec = require('./src/docs/swagger')
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+
+// --- monta socket sobre el server HTTP ---
+const server = http.createServer(app)
+const attachSocket = require('./src/socket')
+const io = attachSocket(server)
+
+// haz accesible io desde los controladores a través de req.app.get('io')
+app.set('io', io)
+
+// Arranque
 const PORT = process.env.PORT || 3000
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`🚀 API en http://localhost:${PORT}`)
 })
-
-const swaggerUi = require('swagger-ui-express');
-const swaggerSpec = require('./src/docs/swagger');
-
-// ...
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-// listo: http://localhost:3000/docs
