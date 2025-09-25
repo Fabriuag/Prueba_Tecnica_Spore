@@ -18,6 +18,7 @@ const mustBeFn = (fn, name) => {
   ['changeRole',   ctrl.changeRole],
   ['softDelete',   ctrl.softDelete],
   ['restore',      ctrl.restore],
+  ['updateUser',   ctrl.updateUser],
 ].forEach(([n, f]) => mustBeFn(f, n));
 
 // LISTAR (solo admin)
@@ -25,6 +26,9 @@ router.get('/', authenticate, isAdmin, ctrl.list);
 
 // CAMBIAR ROL
 router.put('/:id/role', authenticate, isAdmin, ctrl.changeRole);
+
+//ACTUALIZAR A UN NUEVO USUARIO
+router.put('/:id', authenticate, isAdmin, ctrl.updateUser);
 
 // SOFT DELETE
 router.delete('/:id', authenticate, isAdmin, ctrl.softDelete);

@@ -35,8 +35,8 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: '/map',
-    name: 'map',
+    path: '/mapa',
+    name: 'mapa',
     component: MapView,
     meta: { requiresAuth: true }
   }

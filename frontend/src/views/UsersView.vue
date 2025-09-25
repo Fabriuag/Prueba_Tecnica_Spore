@@ -10,61 +10,66 @@
         <router-link class="btn" to="/dashboard">Volver</router-link>
         <button class="btn" @click="fetchUsers">Refrescar</button>
         <button class="btn btn--primary" @click="showForm = !showForm">
-          {{ showForm ? 'Cancelar' : '+ Registrar usuario' }}
+          + Registrar Usuario
         </button>
       </div>
     </div>
 
-    <!-- Formulario de registro de usuario -->
-<!-- Bloque de formulario de registro con estilos Tailwind personalizados -->
-<section v-if="showForm" class="card-ultra section animate-slide-up">
-  <h2 class="section-title">Registrar nuevo usuario</h2>
-  <div class="form-grid-2">
-    <!-- Usuario y contraseña -->
-    <label class="field">
-      <span>Usuario *</span>
-      <input v-model="form.username" type="text" placeholder="Usuario" required />
-    </label>
-    <label class="field">
-      <span>Contraseña *</span>
-      <input v-model="form.password" type="password" placeholder="Contraseña" required />
-    </label>
+    <!-- Formulario de registro/edición -->
+    <section v-if="showForm" class="card-ultra section animate-slide-up">
+      <h2 class="section-title">
+        {{ editMode ? 'Editar usuario' : 'Registrar nuevo usuario' }}
+      </h2>
+      <div class="form-grid-2">
+        <!-- Usuario y contraseña -->
+        <label class="field">
+          <span>Usuario *</span>
+          <input v-model="form.username" type="text" placeholder="Usuario" required />
+        </label>
+        <label class="field" v-if="!editMode">
+          <span>Contraseña *</span>
+          <input v-model="form.password" type="password" placeholder="Contraseña" required />
+        </label>
 
-    <!-- Nombre y apellido -->
-    <label class="field">
-      <span>Nombre</span>
-      <input v-model="form.firstName" type="text" placeholder="Nombre" />
-    </label>
-    <label class="field">
-      <span>Apellido</span>
-      <input v-model="form.lastName" type="text" placeholder="Apellido" />
-    </label>
+        <!-- Nombre y apellido -->
+        <label class="field">
+          <span>Nombre</span>
+          <input v-model="form.firstName" type="text" placeholder="Nombre" />
+        </label>
+        <label class="field">
+          <span>Apellido</span>
+          <input v-model="form.lastName" type="text" placeholder="Apellido" />
+        </label>
 
-    <!-- Email y teléfono -->
-    <label class="field">
-      <span>Email</span>
-      <input v-model="form.email" type="email" placeholder="correo@ejemplo.com" />
-    </label>
-    <label class="field">
-      <span>Teléfono</span>
-      <input v-model="form.phone" type="tel" placeholder="Teléfono" />
-    </label>
+        <!-- Email y teléfono -->
+        <label class="field">
+          <span>Email</span>
+          <input v-model="form.email" type="email" placeholder="correo@ejemplo.com" />
+        </label>
+        <label class="field">
+          <span>Teléfono</span>
+          <input v-model="form.phone" type="tel" placeholder="Teléfono" />
+        </label>
 
-    <!-- Rol -->
-    <label class="field md:col-span-2">
-      <span>Rol</span>
-      <select v-model="form.role">
-        <option value="regular">Usuario regular</option>
-        <option value="admin">Administrador</option>
-      </select>
-    </label>
-  </div>
+        <!-- Rol -->
+          <label class="field md:col-span-2">
+            <span>Rol</span>
+            <select
+              v-model="form.role"
+            >
+              <option value="regular" class="text-black">Usuario regular</option>
+              <option value="admin" class="text-black">Administrador</option>
+            </select>
+          </label>
+      </div>
 
-  <div class="mt-6 flex justify-end gap-2">
-    <button class="btn btn--ghost" @click="showForm = false">Cancelar</button>
-    <button class="btn btn--primary" @click="registerUser">Guardar</button>
-  </div>
-</section>
+      <div class="mt-6 flex justify-end gap-2">
+        <button class="btn btn--ghost" @click="cancelEdit">Cancelar</button>
+        <button class="btn btn--primary" @click="submitUser">
+          {{ editMode ? 'Guardar cambios' : 'Registrar' }}
+        </button>
+      </div>
+    </section>
 
     <!-- Filtros -->
     <UsersFilter v-model="filters" @change="applyFilters" />
@@ -92,6 +97,8 @@
           </div>
 
           <div class="flex flex-wrap gap-2">
+            <button class="btn" @click="editUser(u)">Editar</button>
+
             <button
               v-if="u.role === 'regular'"
               class="btn"
@@ -134,7 +141,7 @@ import { ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import UsersFilter from '@/components/UsersFilter.vue'
 import api from '@/services/api'
-import Swal from 'sweetalert2' // ✅ ya no usamos useToast
+import Swal from 'sweetalert2'
 
 const route = useRoute()
 const router = useRouter()
@@ -143,6 +150,8 @@ const users = ref([])
 const loading = ref(false)
 const error = ref('')
 const showForm = ref(false)
+const editMode = ref(false)
+const editingId = ref(null)
 
 const page = ref(1)
 const pages = ref(1)
@@ -171,29 +180,57 @@ const form = ref({
   email: ''
 })
 
-const registerUser = async () => {
+const submitUser = async () => {
   try {
-    await api.post('/auth/register', form.value)
+    if (editMode.value && editingId.value) {
+      await api.put(`/users/${editingId.value}`, form.value)
+      await Swal.fire({
+        icon: 'success',
+        title: 'Usuario actualizado correctamente',
+        timer: 2000,
+        showConfirmButton: false,
+      })
+    } else {
+      await api.post('/auth/register', form.value)
+      await Swal.fire({
+        icon: 'success',
+        title: 'Usuario registrado correctamente',
+        timer: 2000,
+        showConfirmButton: false,
+      })
+    }
 
-    // ✅ Mensaje de éxito
-    await Swal.fire({
-      icon: 'success',
-      title: 'Usuario registrado correctamente',
-      showConfirmButton: false,
-      timer: 2000
-    })
-
-    showForm.value = false
-    Object.keys(form.value).forEach(k => form.value[k] = '')
+    cancelEdit()
     fetchUsers()
   } catch (err) {
-    // ✅ Mensaje de error
     Swal.fire({
       icon: 'error',
-      title: 'Error al registrar usuario',
-      text: err?.response?.data?.error || 'Inténtalo de nuevo'
+      title: 'Error',
+      text: err?.response?.data?.error || 'Inténtalo de nuevo',
     })
   }
+}
+
+const cancelEdit = () => {
+  showForm.value = false
+  editMode.value = false
+  editingId.value = null
+  Object.keys(form.value).forEach(k => form.value[k] = '')
+}
+
+const editUser = (user) => {
+  form.value = {
+    username: user.username,
+    password: '', // no editable desde aquí
+    role: user.role,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    phone: user.phone,
+    email: user.email
+  }
+  editingId.value = user.id
+  editMode.value = true
+  showForm.value = true
 }
 
 const buildQuery = () => {
@@ -301,7 +338,6 @@ watch(() => route.query, () => {
 
 onMounted(fetchUsers)
 </script>
-
 
 <style scoped>
 .input {

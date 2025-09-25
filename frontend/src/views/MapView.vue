@@ -12,7 +12,7 @@
     </div>
 
     <div class="map-wrapper">
-      <l-map v-if="ready" :zoom="zoom" :center="center" style="height: 70vh; border-radius: 16px;">
+      <l-map v-if="ready" :zoom="zoom" :center="center" style="height: 70vh; border-radius: 26px;">
         <l-tile-layer :url="url" :attribution="attribution" />
         <l-marker
           v-for="car in withPos"
@@ -49,10 +49,10 @@ L.Icon.Default.mergeOptions({ iconRetinaUrl: markerIcon2x, iconUrl: markerIcon, 
 
 /* --- mapa --- */
 const ready = ref(false)
-const zoom = ref(12)
+const zoom = ref(11)
 const center = ref([20.67, -103.35])
 const url = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-const attribution = '&copy; OpenStreetMap contributors'
+const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 
 /* --- helpers GEOGRAPHY(Point,4326) => [lon,lat] --- */
 const lat = (car) => car?.location?.coordinates?.[1] ?? null

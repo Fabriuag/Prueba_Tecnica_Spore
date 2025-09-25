@@ -125,4 +125,36 @@ const restore = async (req, res) => {
   }
 };
 
-module.exports = { list, changeRole, softDelete, restore };
+const updateUser = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const u = await User.findByPk(id, { paranoid: false });
+    if (!u) return res.status(404).json({ error: 'User not found' });
+
+    // Campos permitidos a editar
+    const {
+      username,
+      firstName,
+      lastName,
+      email,
+      phone,
+      role
+    } = req.body;
+
+    await u.update({
+      username,
+      firstName,
+      lastName,
+      email,
+      phone,
+      role,
+    });
+
+    res.json(u);
+  } catch (e) {
+    console.error('updateUser error:', e);
+    res.status(500).json({ error: 'Failed to update user' });
+  }
+};
+
+module.exports = { list, changeRole, softDelete, restore, updateUser };

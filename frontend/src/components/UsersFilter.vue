@@ -25,9 +25,9 @@
             :value="model.role"
             @change="update('role', $event.target.value)"
           >
-            <option value="">Todos</option>
-            <option value="regular">Regular</option>
-            <option value="admin">Admin</option>
+            <option value="" class="text-black">Todos</option>
+            <option value="regular" class="text-black">Regular</option>
+            <option value="admin" class="text-black">Admin</option>
           </select>
         </label>
       </div>
@@ -39,9 +39,9 @@
             :value="model.status"
             @change="update('status', $event.target.value)"
           >
-            <option value="active">Activos</option>
-            <option value="deleted">Eliminados</option>
-            <option value="all">Todos</option>
+            <option value="active" class="text-black">Activos</option>
+            <option value="deleted" class="text-black">Eliminados</option>
+            <option value="all" class="text-black">Todos</option>
           </select>
         </label>
       </div>
@@ -67,10 +67,10 @@
           <label class="field">
             <span>Ordenar por</span>
             <select :value="model.sortBy" @change="update('sortBy', $event.target.value)">
-              <option value="createdAt">Creado</option>
-              <option value="username">Usuario</option>
-              <option value="email">Email</option>
-              <option value="role">Rol</option>
+              <option value="createdAt" class="text-black">Creado</option>
+              <option value="username" class="text-black">Usuario</option>
+              <option value="email" class="text-black">Email</option>
+              <option value="role" class="text-black">Rol</option>
             </select>
           </label>
         </div>
@@ -78,8 +78,8 @@
           <label class="field">
             <span>Dirección</span>
             <select :value="model.sortDir" @change="update('sortDir', $event.target.value)">
-              <option value="desc">Desc</option>
-              <option value="asc">Asc</option>
+              <option value="desc" class="text-black">Desc</option>
+              <option value="asc" class="text-black">Asc</option>
             </select>
           </label>
         </div>

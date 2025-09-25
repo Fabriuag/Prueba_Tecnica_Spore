@@ -61,8 +61,9 @@
               :disabled="ownersLoading"
               @focus="ensureOwners()"
             >
-              <option value="">Sin propietario</option>
+              <option value="" class="text-black">Sin propietario</option>
               <option
+              class="text-black"
                 v-for="u in owners"
                 :key="u.id"
                 :value="String(u.id)"
@@ -90,18 +91,18 @@
       <div>
         <div class="stat-label">Estado</div>
         <select class="btn" v-model="status" @change="goFirstPage">
-          <option value="active">Activos</option>
-          <option value="deleted">Eliminados</option>
-          <option value="all">Todos</option>
+          <option value="active" class="text-black">Activos</option>
+          <option value="deleted" class="text-black">Eliminados</option>
+          <option value="all" class="text-black">Todos</option>
         </select>
       </div>
 
       <div>
         <div class="stat-label">Límite</div>
         <select class="btn" v-model.number="limit" @change="goFirstPage">
-          <option :value="5">5</option>
-          <option :value="10">10</option>
-          <option :value="20">20</option>
+          <option :value="5" class="text-black">5</option>
+          <option :value="10" class="text-black">10</option>
+          <option :value="20" class="text-black">20</option>
         </select>
       </div>
     </section>
@@ -227,11 +228,13 @@
             :disabled="ownersLoading"
             @focus="ensureOwners()"
           >
-            <option value="">Sin propietario</option>
+            <option value=""
+            class="text-black">Sin propietario</option>
             <option
               v-for="u in owners"
               :key="u.id"
               :value="String(u.id)"
+              class="text-black"
             >
               {{ u.firstName || '—' }} {{ u.lastName || '' }} ({{ u.username }}) — ID {{ u.id }}
             </option>

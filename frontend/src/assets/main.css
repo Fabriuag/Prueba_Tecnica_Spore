@@ -280,6 +280,8 @@
     box-shadow: 0 20px 40px rgba(28,210,198,0.2);
   }
 
+
+
   .btn--primary { @apply border-transparent text-white; background-color: #5C4DCC; }
   .btn--primary:hover { background-color: #7A6CE6; }
   .btn--ghost { @apply border-transparent bg-transparent; }
