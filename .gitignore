@@ -1,5 +1,0 @@
-# Ignorar node_modules (carpetas con dependencias de npm)
-node_modules/
-
-# Ignorar variables de entorno
-.env
