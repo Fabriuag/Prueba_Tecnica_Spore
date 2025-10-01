@@ -396,13 +396,13 @@ const handleRegister = async () => {
 <style scoped>
 .register { max-width: 560px; margin: 40px auto; display: grid; gap: 14px; }
 .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-@media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+@media (max-width:  640px) { .grid { grid-template-columns: 1fr; } }
 .field { display: grid; gap: 6px; }
 .field input {
   padding: 10px; border: 1px solid #ddd; border-radius: 8px; outline: none; transition: border-color .15s ease;
 }
 .field input:focus { border-color: #6b7280; }
-.field input.invalid { border-color: #dc2626; background: #fff7f7; }
+.field input.invalid { border-color: #dc2626; background: #fff7f7; color: #111;}
 .field-error { color: #b91c1c; font-size: 0.85rem; }
 .row { display: flex; gap: 10px; align-items: center; }
 .toggle { display: inline-flex; gap: 8px; align-items: center; cursor: pointer; }

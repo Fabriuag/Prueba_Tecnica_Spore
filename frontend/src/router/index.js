@@ -5,11 +5,17 @@ import DashboardView from '@/views/DashboardView.vue'
 import UsersView from '@/views/UsersView.vue'
 import VehiclesView from '@/views/VehiclesView.vue'
 import MapView from '@/views/MapView.vue'
+import RegisterView from '@/views/RegisterView.vue'
 
 const routes = [
   {
     path: '/',
     redirect: '/login'
+  },
+{
+    path: '/register',
+    name: 'register',
+    component: RegisterView
   },
   {
     path: '/login',
