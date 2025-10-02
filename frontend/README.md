@@ -40,8 +40,8 @@ frontend/
 ## 🚀 Instalación y Uso
 
 ### 1. Clonar el proyecto
-git clone https://github.com/tu-repo.git
-cd frontend
+- git clone https://github.com/tu-repo.git
+- cd frontend
 
 ### 2. Instalar dependencias
 npm install
@@ -53,12 +53,12 @@ Abre tu navegador en:
 📍 http://localhost:5173
 
 ## Paquetes instalados
-npm install vue
-npm install vite
-npm install sweetalert2
-npm install vue-router
-npm install -D tailwindcss postcss autoprefixer
-npx tailwindcss init -p
+- npm install vue
+- npm install vite
+- npm install sweetalert2
+- npm install vue-router
+- npm install -D tailwindcss postcss autoprefixer
+- npx tailwindcss init -p
 
 ## 🔐 Funcionalidades Implementadas
 
@@ -70,15 +70,15 @@ npx tailwindcss init -p
 🎨 UI minimalista con estilo moderno (opcionalmente usando TailwindCSS)
 
 ## Conexión con el Backend
-Asegúrate de que el backend esté corriendo en http://localhost:3000.
-El frontend envía peticiones fetch a endpoints como:
-POST /api/auth/login
-POST /api/auth/register
-POST /api/auth/simple-reset
+- Asegúrate de que el backend esté corriendo en http://localhost:3000.
+- El frontend envía peticiones fetch a endpoints como:
+- POST /api/auth/login
+- POST /api/auth/register
+- POST /api/auth/simple-reset
 
 ## Notas Adicionales
-Puedes personalizar colores, fuentes y estructura visual en src/assets o directamente en Tailwind.
-El sistema de rutas es expandible y puedes protegerlas con navegación condicional según roles o JWT.
+- Puedes personalizar colores, fuentes y estructura visual en src/assets o directamente en Tailwind.
+- El sistema de rutas es expandible y puedes protegerlas con navegación condicional según roles o JWT.
 
 ## Autor
 Desarrollado por Fabrizio Galindo Ayala

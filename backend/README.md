@@ -75,16 +75,16 @@ backend/
 
 ### Clona el repositorio y entra al backend:
 
-git clone https://github.com/tu-repo.git
-cd backend
+- git clone https://github.com/tu-repo.git
+- cd backend
 
 ### Instala las dependencias 
 npm install
 
 ### Crea un archivo .env en la raíz:
-PORT=3000
-JWT_SECRET=tu_clave_secreta
-DATABASE_URL=postgres://usuario:clave@localhost:5432/tu_basededatos
+- PORT=3000
+- JWT_SECRET=tu_clave_secreta
+- DATABASE_URL=postgres://usuario:clave@localhost:5432/tu_basededatos
 
 ### Configura Sequelize y aplica migraciones:
 npx sequelize-cli db:migrate
@@ -93,13 +93,13 @@ npx sequelize-cli db:migrate
 npm run dev
 
 ## Dependencias clave del Backend
-npm install express sequelize pg pg-hstore dotenv
-npm install bcryptjs jsonwebtoken
-npm install swagger-jsdoc swagger-ui-express
+- npm install express sequelize pg pg-hstore dotenv
+- npm install bcryptjs jsonwebtoken
+- npm install swagger-jsdoc swagger-ui-express
 
 ## Notas Adicionales
-La base de datos usada es PostgreSQL.
-Las contraseñas están protegidas con bcryptjs (10 salt rounds).
-La autenticación usa JWT con expiración de 24h.
-La API soporta registro, login, recuperación de contraseña y más.
-Todos los errores están manejados con códigos HTTP apropiados (400, 401, 404, 500).
+- La base de datos usada es PostgreSQL.
+- Las contraseñas están protegidas con bcryptjs (10 salt rounds).
+- La autenticación usa JWT con expiración de 24h.
+- La API soporta registro, login, recuperación de contraseña y más.
+- Todos los errores están manejados con códigos HTTP apropiados (400, 401, 404, 500).
