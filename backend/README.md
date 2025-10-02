@@ -1,66 +1,105 @@
-# Frontend (Vue 3 + Vite)
+# 🚗 Backend - Sistema de Gestión de Usuarios y Vehículos
 
-Aplicación frontend para el proyecto. Usa Vue 3 con Vite, TailwindCSS y DaisyUI. Se comunica con el backend Express en el puerto 3000.
+Este es el backend de un sistema desarrollado con Node.js y Express que permite:
 
-## Requisitos
-- Node.js 18+ (recomendado 20+). El proyecto fue probado con Node 24.6.0.
-- npm 8+ o pnpm/yarn (usa uno a la vez).
+- Registro e inicio de sesión de usuarios con JWT
+- Gestión de contraseñas con hashing (bcryptjs)
+- Restablecimiento de contraseña simple
+- Documentación del API con Swagger
+- Base de datos PostgreSQL conectada mediante Sequelize ORM
 
-## Instalación
+---
 
+## 🔧 Tecnologías Utilizadas
+
+- **Node.js** v24.6.0
+- **Express** - Framework de servidor
+- **Sequelize** - ORM para PostgreSQL
+- **PostgreSQL** - Base de datos relacional
+- **JWT (jsonwebtoken)** - Autenticación por tokens
+- **bcryptjs** - Hasheo seguro de contraseñas
+- **dotenv** - Variables de entorno
+- **Swagger** - Documentación de la API
+- **nvm** - Node Version Manager (`v11.5.1`)
+
+---
+### Estructuras de carpetas
+backend/
+│
+├── config/ # Configuración de Sequelize
+├── controllers/ # Controladores (auth.js, user.js, etc.)
+├── models/ # Modelos Sequelize (User.js, Vehicle.js)
+├── routes/ # Rutas de la API (auth.js, user.js, etc.)
+├── swagger/ # Configuración y specs de Swagger
+├── middleware/ # Middlewares personalizados
+├── .env # Variables de entorno (no se sube)
+├── server.js # Archivo principal del servidor
+└── README.md # Este archivo
+
+## 🔐 Funcionalidades Principales
+
+### ✅ Registro de Usuario
+- Endpoint: `POST /api/auth/register`
+- Campos: `username`, `password`, `role`, `email`, etc.
+- Valida duplicados y hashea la contraseña
+
+### 🔐 Login con JWT
+- Endpoint: `POST /api/auth/login`
+- Devuelve token JWT válido por 24h
+
+### 🔁 Restablecimiento de Contraseña
+- Endpoint: `POST /api/auth/simple-reset`
+- Requiere `username` y nueva `password`
+- Actualiza la contraseña del usuario (hasheada)
+
+### 🔒 Protección con Borrado Lógico
+- Modelo `User` configurado con `paranoid: true`
+- Las eliminaciones son suaves (no se borra físicamente)
+
+---
+
+## 📄 Modelos Sequelize
+
+### 🧑‍💼 User
+{
+  id: INTEGER (PK),
+  username: STRING (único),
+  password: STRING (hasheado),
+  role: ENUM('admin', 'regular'),
+  firstName, lastName, phone, email,
+  deletedAt: DATE (borrado lógico)
+}
+
+
+## Instalación y Ejecución del Backend
+
+### Clona el repositorio y entra al backend:
+
+git clone https://github.com/tu-repo.git
+cd backend
+
+### Instala las dependencias 
 npm install
 
+### Crea un archivo .env en la raíz:
+PORT=3000
+JWT_SECRET=tu_clave_secreta
+DATABASE_URL=postgres://usuario:clave@localhost:5432/tu_basededatos
 
-## Variables de entorno
-Crea .env en frontend/ si necesitas personalizar URLs. Ejemplo:
+### Configura Sequelize y aplica migraciones:
+npx sequelize-cli db:migrate
 
-VITE_API_BASE=http://localhost:3000
-
-- VITE_API_BASE: URL base del backend. Por defecto normalmente es http://localhost:3000.
-
-## Scripts
-- Desarrollo (hot-reload en http://localhost:5173):
-
+### Inicia el servidor:
 npm run dev
 
-- Build producción:
+## Dependencias clave del Backend
+npm install express sequelize pg pg-hstore dotenv
+npm install bcryptjs jsonwebtoken
+npm install swagger-jsdoc swagger-ui-express
 
-npm run build
-
-- Previsualización del build:
-
-npm run preview
-
-
-## Stack UI
-- TailwindCSS + PostCSS + DaisyUI (componentes base)
-- SweetAlert2 (alertas/modal); configurado para salir por encima de overlays
-- Leaflet (mapas) si lo usas en componentes específicos
-
-Instalaciones útiles:
-
-# Mapas
-npm install leaflet
-
-# SweetAlert2 (si no está ya)
-npm install sweetalert2
-
-
-## Convenciones de estilos
-- Estilos globales en src/style.css. Ajustes importantes:
-  - .swal2-container con z-index alto para que las alertas se muestren sobre cualquier modal.
-
-## Estructura relevante
-- src/components/
-  - UsuariosRegistrados.vue: gestión de usuarios; usa SweetAlert2 para feedback.
-  - CarrosRegistrados.vue: listado/gestión de carros.
-  - AgregarCarro.vue: formulario para alta/edición de carros.
-
-## Conexión con el backend
-- El backend corre típicamente en http://localhost:3000.
-- Asegúrate de que CORS está habilitado en el backend (ya configurado) y que VITE_API_BASE apunta correctamente si lo usas.
-
-## Solución de problemas
-- Alertas detrás de modales: ver src/style.css (z-index para .swal2-container).
-- CORS/401: revisa la URL del backend y tokens/headers.
-- Mapas sin estilos: asegúrate de importar los estilos de Leaflet en el componente o globalmente.
+## Notas Adicionales
+La base de datos usada es PostgreSQL.
+Las contraseñas están protegidas con bcryptjs (10 salt rounds).
+La autenticación usa JWT con expiración de 24h.
+La API soporta registro, login, recuperación de contraseña y más.
+Todos los errores están manejados con códigos HTTP apropiados (400, 401, 404, 500).
