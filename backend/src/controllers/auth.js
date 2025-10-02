@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { User } = require('../../models');
+const bcrypt = require('bcryptjs');
 
 // ===============================
 // REGISTRAR USUARIO
@@ -108,8 +109,38 @@ const verifyToken = (token) => {
   }
 };
 
+// ===============================
+// RESTABLECER CONTRASEÑA SIMPLE
+// ===============================
+const simpleReset = async (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ error: 'Faltan campos requeridos' });
+  }
+
+  try {
+    const user = await User.findOne({ where: { username } });
+
+    if (!user) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user.password = hashedPassword;
+
+    await user.save();
+
+    res.json({ message: 'Contraseña actualizada correctamente' });
+  } catch (err) {
+    console.error('Error en simpleReset:', err);
+    res.status(500).json({ error: 'Error del servidor' });
+  }
+};
+
 module.exports = {
   register,
   login,
-  verifyToken
+  verifyToken,
+  simpleReset
 };

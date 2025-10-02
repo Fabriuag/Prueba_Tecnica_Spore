@@ -6,6 +6,7 @@ import UsersView from '@/views/UsersView.vue'
 import VehiclesView from '@/views/VehiclesView.vue'
 import MapView from '@/views/MapView.vue'
 import RegisterView from '@/views/RegisterView.vue'
+import ForgotPasswordView from '@/views/ForgotPasswordView.vue'
 
 const routes = [
   {
@@ -16,6 +17,10 @@ const routes = [
     path: '/register',
     name: 'register',
     component: RegisterView
+  },
+  {
+    path: '/forgot-password',
+    component: ForgotPasswordView
   },
   {
     path: '/login',

@@ -1,60 +1,148 @@
 <template>
+  <!-- Botón para volver al login -->
+  <router-link
+    to="/login"
+    class="btn btn--ghost"
+    style="position:fixed; top:16px; left:16px;"
+  >
+    Iniciar sesión
+  </router-link>
+
+  <!-- Centro de la pantalla -->
   <div class="min-h-screen flex items-center justify-center px-4">
-    <div class="max-w-md w-full space-y-4">
-      <h2 class="text-2xl font-bold text-center">Recuperar contraseña</h2>
-      <p class="text-center text-sm text-gray-500">Ingresa tu correo para enviarte instrucciones</p>
+    <div class="login w-full max-w-xl">
+      <!-- Encabezado -->
+      <div class="mb-4">
+        <h2 class="title brand-gradient-text">Restablecer contraseña</h2>
+        <p class="subtitle">Ingresa tu usuario y una nueva contraseña.</p>
+      </div>
 
-      <form @submit.prevent="handleSubmit" class="grid gap-4">
-        <label class="block">
-          <span class="block text-sm font-medium text-gray-700">Correo electrónico</span>
-          <input
-            type="email"
-            v-model="email"
-            required
-            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:border-blue-300"
-            placeholder="correo@ejemplo.com"
-          />
-        </label>
+      <!-- Formulario -->
+      <form @submit.prevent="onSubmit" novalidate>
+        <div class="grid gap-3">
+          <!-- Usuario -->
+          <label class="field">
+            <span>Usuario *</span>
+            <input
+              v-model.trim="username"
+              type="text"
+              placeholder="Tu usuario"
+              autocomplete="username"
+              :class="{ invalid: touched.user && !validUser }"
+              @blur="touched.user = true"
+              required
+            />
+            <small v-if="touched.user && !validUser" class="error">
+              Ingresa un usuario válido.
+            </small>
+          </label>
 
-        <button type="submit" class="btn btn--primary w-full" :disabled="loading">
-          <span v-if="!loading">Enviar instrucciones</span>
-          <span v-else>Enviando…</span>
-        </button>
+          <!-- Nueva contraseña -->
+          <label class="field">
+            <span>Nueva contraseña *</span>
+            <div class="relative">
+              <input
+                v-model="password"
+                :type="showPass ? 'text' : 'password'"
+                placeholder="••••••••"
+                autocomplete="new-password"
+                :class="{ invalid: touched.pass && !validPass }"
+                @blur="touched.pass = true"
+                required
+              />
+              <button
+                type="button"
+                class="btn btn--ghost"
+                style="position:absolute; right:6px; top:6px; padding:6px 10px;"
+                @click="showPass = !showPass"
+              >
+                {{ showPass ? 'Ocultar' : 'Mostrar' }}
+              </button>
+            </div>
+            <small v-if="touched.pass && !validPass" class="error">
+              La contraseña es requerida.
+            </small>
+          </label>
+
+          <!-- Botón -->
+          <button
+            type="submit"
+            class="btn btn--primary mt-2"
+            :disabled="loading || !canSubmit"
+          >
+            <span v-if="!loading">Restablecer</span>
+            <span v-else>Procesando…</span>
+          </button>
+
+          <!-- Mensajes -->
+          <p v-if="error" class="error mt-1">{{ error }}</p>
+          <p v-if="success" class="text-green-600 text-sm mt-1">{{ success }}</p>
+        </div>
       </form>
-
-      <router-link to="/login" class="text-sm text-blue-600 hover:underline text-center block">
-        Volver al login
-      </router-link>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import api from '@/services/api'
+import { ref, computed } from 'vue'
 import Swal from 'sweetalert2'
+import router from '@/router'
 
-const email = ref('')
+const username = ref('')
+const password = ref('')
+const showPass = ref(false)
 const loading = ref(false)
+const error = ref('')
+const success = ref('')
+const touched = ref({ user: false, pass: false })
 
-const handleSubmit = async () => {
+const validUser = computed(() => /^[\w.\-]{3,32}$/.test(username.value || ''))
+const validPass = computed(() => (password.value || '').length >= 6)
+const canSubmit = computed(() => validUser.value && validPass.value)
+
+const onSubmit = async () => {
+  touched.value.user = true
+  touched.value.pass = true
+  error.value = ''
+  success.value = ''
+
+  if (!canSubmit.value) return
+
   loading.value = true
   try {
-    await api.post('/auth/forgot-password', { email: email.value.trim() })
+    const res = await fetch('/api/auth/simple-reset', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username: username.value,
+        password: password.value
+      })
+    })
 
-    await Swal.fire({
-      icon: 'success',
-      title: 'Correo enviado',
-      text: 'Si el correo está registrado, recibirás instrucciones en breve.',
-    })
-  } catch (e) {
-    await Swal.fire({
-      icon: 'error',
-      title: 'Error',
-      text: e?.response?.data?.error || 'No se pudo enviar el correo'
-    })
+    const data = await res.json()
+
+    if (!res.ok) {
+      error.value = data?.error || 'Error al restablecer la contraseña'
+    } else {
+      success.value = 'Contraseña actualizada correctamente'
+      await Swal.fire({
+        icon: 'success',
+        title: 'Contraseña actualizada',
+        text: 'Ya puedes iniciar sesión con tu nueva contraseña',
+        timer: 2000,
+        showConfirmButton: false
+      })
+      router.push('/login')
+    }
+  } catch (err) {
+    console.error(err)
+    error.value = 'Error de conexión con el servidor'
   } finally {
     loading.value = false
   }
 }
 </script>
+
+<style scoped>
+.min-h-screen { min-height: 100vh; }
+</style>
