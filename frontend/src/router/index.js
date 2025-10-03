@@ -20,6 +20,7 @@ const routes = [
   },
   {
     path: '/forgot-password',
+    name: 'forgot-password',
     component: ForgotPasswordView
   },
   {
