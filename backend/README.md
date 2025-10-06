@@ -87,7 +87,9 @@ npm install
 - DATABASE_URL=postgres://usuario:clave@localhost:5432/tu_basededatos
 
 ### Configura Sequelize y aplica migraciones:
-npx sequelize-cli db:migrate
+- npm run migrate      # para aplicar todas las migraciones
+- npm run seed         # para ejecutar los seeders si los haces
+
 
 ### Inicia el servidor:
 npm run dev
