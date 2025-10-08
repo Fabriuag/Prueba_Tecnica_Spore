@@ -1,27 +1,51 @@
 // backend/src/controllers/vehicle.js
+const fs = require('fs')
+const path = require('path')
+const crypto = require('crypto')
 const { Op } = require('sequelize')
 const { Vehicle, User } = require('../../models')
 
+// ===== Utilidades =====
+
+// Convertir lat/lon a tipo GEOGRAPHY(Point)
 const toPoint = (lat, lon) =>
   (lat == null || lon == null)
     ? null
     : { type: 'Point', coordinates: [Number(lon), Number(lat)] }
 
-/**
- * GET /api/vehicles
- * Query opcionales:
- *  - status: "active" | "deleted" | "all"   (default "active")
- *  - page, limit
- */
+// Guardar imagen con hash SHA256 para evitar duplicados
+const saveImageAndGetPath = (fileBuffer, mimetype) => {
+  const hash = crypto.createHash('sha256').update(fileBuffer).digest('hex')
+  const ext = mimetype.split('/')[1] || 'jpg'
+  const filename = `${hash}.${ext}`
+  const folder = path.join(__dirname, '..', '..', 'uploads', 'images')
+  const filePath = path.join(folder, filename)
+
+  // Crear carpeta si no existe
+  if (!fs.existsSync(folder)) {
+    fs.mkdirSync(folder, { recursive: true })
+  }
+
+  // Solo guardar si no existe
+  if (!fs.existsSync(filePath)) {
+    fs.writeFileSync(filePath, fileBuffer)
+  }
+
+  // Devuelve la ruta relativa que se guarda en la DB
+  return `/uploads/images/${filename}`
+}
+
+// ===== Controladores =====
+
+// LISTAR VEHÍCULOS
 const list = async (req, res) => {
   try {
-    const page  = Math.max(parseInt(req.query.page  || '1', 10), 1)
+    const page = Math.max(parseInt(req.query.page || '1', 10), 1)
     const limit = Math.max(parseInt(req.query.limit || '10', 10), 1)
     const offset = (page - 1) * limit
 
     const where = (req.user?.role === 'admin') ? {} : { userId: req.user.id }
 
-    // Filtrado por estado (aprovechando paranoid)
     const status = (req.query.status || 'active').toLowerCase()
     let paranoid = true
     if (status === 'deleted') {
@@ -29,18 +53,22 @@ const list = async (req, res) => {
       where.deletedAt = { [Op.ne]: null }
     } else if (status === 'all') {
       paranoid = false
-    } // "active" => paranoid:true (no hace falta where.deletedAt=null)
+    }
 
     const { rows, count } = await Vehicle.findAndCountAll({
       where,
       paranoid,
-      include: [{ model: User, as: 'User', attributes: ['id','username','role','firstName','lastName','email'] }],
-      limit, offset, order: [['id','ASC']]
+      include: [{
+        model: User,
+        as: 'User',
+        attributes: ['id', 'username', 'role', 'firstName', 'lastName', 'email']
+      }],
+      limit, offset, order: [['id', 'ASC']]
     })
 
     res.json({
       data: rows,
-      pagination: { page, limit, total: count, pages: Math.ceil(count/limit) }
+      pagination: { page, limit, total: count, pages: Math.ceil(count / limit) }
     })
   } catch (e) {
     console.error('vehicle.list error:', e)
@@ -48,9 +76,10 @@ const list = async (req, res) => {
   }
 }
 
+// OBTENER VEHÍCULO POR ID
 const getById = async (req, res) => {
   const v = await Vehicle.findByPk(req.params.id, {
-    include: [{ model: User, as: 'User', attributes: ['id','username','role','firstName','lastName','email'] }],
+    include: [{ model: User, as: 'User', attributes: ['id', 'username', 'role', 'firstName', 'lastName', 'email'] }],
     paranoid: false
   })
   if (!v) return res.status(404).json({ error: 'Vehicle not found' })
@@ -62,15 +91,16 @@ const getById = async (req, res) => {
   res.json(v)
 }
 
+// CREAR VEHÍCULO
 const create = async (req, res) => {
   try {
     const file = req.file
     const plates = req.body.plates || req.body.placas || req.body.plate || req.body.licensePlate
-    const brand  = req.body.brand  || req.body.marca
-    const model  = req.body.model  || req.body.modelo
-    const color  = req.body.color
-    const lat    = req.body.lat ?? req.body.latitud
-    const lon    = req.body.lon ?? req.body.longitud
+    const brand = req.body.brand || req.body.marca
+    const model = req.body.model || req.body.modelo
+    const color = req.body.color
+    const lat = req.body.lat ?? req.body.latitud
+    const lon = req.body.lon ?? req.body.longitud
     let { userId } = req.body
 
     if (!plates || !brand) return res.status(400).json({ error: 'plates and brand are required' })
@@ -83,7 +113,7 @@ const create = async (req, res) => {
     }
 
     const payload = { plates, brand, model, color, location: toPoint(lat, lon), userId }
-    if (file?.buffer) payload.image = file.buffer
+    if (file?.buffer) payload.image = saveImageAndGetPath(file.buffer, file.mimetype)
 
     const vehicle = await Vehicle.create(payload)
 
@@ -97,6 +127,7 @@ const create = async (req, res) => {
   }
 }
 
+// ACTUALIZAR VEHÍCULO
 const update = async (req, res) => {
   try {
     const v = await Vehicle.findByPk(req.params.id, { paranoid: false })
@@ -126,9 +157,8 @@ const update = async (req, res) => {
     const lonVal = lon ?? longitud
     if (latVal != null && lonVal != null) updates.location = toPoint(latVal, lonVal)
 
-    if (file?.buffer) updates.image = file.buffer
+    if (file?.buffer) updates.image = saveImageAndGetPath(file.buffer, file.mimetype)
 
-    // cambiar dueño solo admin
     if (req.user.role === 'admin' && typeof userId !== 'undefined') {
       if (userId === null || userId === '') {
         updates.userId = null
@@ -144,7 +174,7 @@ const update = async (req, res) => {
     }
 
     await v.update(updates)
-    await v.reload({ include: [{ model: User, as: 'User', attributes: ['id','username','role'] }], paranoid: false })
+    await v.reload({ include: [{ model: User, as: 'User', attributes: ['id', 'username', 'role'] }], paranoid: false })
 
     const io = req.app.get('io')
     io?.to('admins').to(`user:${v.userId}`).emit('vehicles:upsert', v.toJSON())
@@ -156,10 +186,7 @@ const update = async (req, res) => {
   }
 }
 
-/**
- * DELETE /api/vehicles/:id
- * Soft delete por defecto. Borrado definitivo con ?force=true (solo admin).
- */
+// ELIMINAR VEHÍCULO (soft o hard)
 const remove = async (req, res) => {
   try {
     const v = await Vehicle.findByPk(req.params.id, { paranoid: false })
@@ -169,9 +196,9 @@ const remove = async (req, res) => {
 
     const hard = req.query.force === 'true'
     if (hard && req.user.role === 'admin') {
-      await v.destroy({ force: true }) // elimina fila
+      await v.destroy({ force: true })
     } else {
-      await v.destroy() // marca deletedAt
+      await v.destroy()
     }
 
     const io = req.app.get('io')
@@ -184,10 +211,7 @@ const remove = async (req, res) => {
   }
 }
 
-/**
- * POST /api/vehicles/:id/restore
- * Restaura un soft delete.
- */
+// RESTAURAR VEHÍCULO
 const restore = async (req, res) => {
   try {
     const v = await Vehicle.findByPk(req.params.id, { paranoid: false })
@@ -209,18 +233,21 @@ const restore = async (req, res) => {
   }
 }
 
+// SERVIR IMAGEN (solo admins o dueño)
 const image = async (req, res) => {
   try {
-    const v = await Vehicle.findByPk(req.params.id, { attributes: ['image','userId'], paranoid: false })
+    const v = await Vehicle.findByPk(req.params.id, { attributes: ['image', 'userId'], paranoid: false })
     if (!v || !v.image) return res.status(404).end()
 
     if (!(req.user?.role === 'admin' || req.user?.id === v.userId)) {
       return res.status(403).json({ error: 'Forbidden' })
     }
 
+    const imagePath = path.join(__dirname, '..', '..', v.image)
+    if (!fs.existsSync(imagePath)) return res.status(404).end()
+
     res.set('Cache-Control', 'private, max-age=60')
-    res.type('image/jpeg')
-    return res.send(v.image)
+    return res.sendFile(imagePath)
   } catch (e) {
     console.error('vehicle.image error:', e)
     return res.status(500).json({ error: 'Failed to load image' })

@@ -7,8 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     model:    { type: DataTypes.STRING,  allowNull: true  },
     color:    { type: DataTypes.STRING,  allowNull: true  },
 
-    // ÚNICO campo de imagen (binario)
-    image:    { type: DataTypes.BLOB,    allowNull: true  },
+    image:    { type: DataTypes.STRING,    allowNull: true  },
 
     // GEOGRAPHY(Point,4326): [lon, lat]
     location: { type: DataTypes.GEOGRAPHY('POINT', 4326), allowNull: true },

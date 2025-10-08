@@ -14,6 +14,10 @@ const adminRoutes = require('./src/routes/admin')
 const vehicleRoutes = require('./src/routes/vehicle')
 const userRoutes = require('./src/routes/user')
 
+const path = require('path')
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+
 app.use('/api/auth', authRoutes)
 app.use('/api/admin', adminRoutes)
 app.use('/api/vehicles', vehicleRoutes)

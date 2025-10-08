@@ -6,3 +6,6 @@ node_modules/
 
 #Ignorar node_modules en src
 backend/src/node_modules/
+
+uploads/images/
+
