@@ -10,7 +10,7 @@ const options = {
       description: 'API de auth, admin y automóviles',
     },
     servers: [
-      { url: 'http://localhost:3000', description: 'Dev' },
+      { url: process.env.VITE_URL, description: 'Dev' },
     ],
     components: {
       securitySchemes: {

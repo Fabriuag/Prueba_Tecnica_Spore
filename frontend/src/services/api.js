@@ -1,9 +1,9 @@
 // src/services/api.js
-require('dotenv').config();
+
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: process.env.VITE_API_URL,
+  baseURL: '/api',
 })
 
 api.interceptors.request.use((config) => {
