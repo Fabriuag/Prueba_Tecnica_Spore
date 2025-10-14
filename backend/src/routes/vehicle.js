@@ -15,17 +15,33 @@ const upload = multer({
   }
 })
 
+const validate = require('../middlewares/validate')
+const {
+  validateVehicleId,
+  validateCreateVehicle,
+  validateUpdateVehicle,
+  validateForceDelete
+} = require('../validators/vehiclevalidator') // Asegúrate de que el nombre del archivo tenga la V mayúscula
+
+// Listar vehículos
 router.get('/', authenticate, ctrl.list)
-router.get('/:id', authenticate, ctrl.getById)
-router.get('/:id/image', authenticate, ctrl.image)
 
-router.post('/', authenticate, upload.single('image'), ctrl.create)
-router.put('/:id', authenticate, upload.single('image'), ctrl.update)
+// Obtener vehículo por ID
+router.get('/:id', authenticate, validateVehicleId, validate, ctrl.getById)
 
-// Soft delete por defecto; hard delete con ?force=true (solo admin)
-router.delete('/:id', authenticate, ctrl.remove)
+// Obtener imagen
+router.get('/:id/image', authenticate, validateVehicleId, validate, ctrl.image)
 
-// ✅ Restaurar
-router.post('/:id/restore', authenticate, ctrl.restore)
+// Crear vehículo
+router.post('/', authenticate, upload.single('image'), validateCreateVehicle, validate, ctrl.create)
+
+// Actualizar vehículo
+router.put('/:id', authenticate, upload.single('image'), validateVehicleId, validateUpdateVehicle, validate, ctrl.update)
+
+// Eliminar vehículo (soft/hard)
+router.delete('/:id', authenticate, validateVehicleId, validateForceDelete, validate, ctrl.remove)
+
+// Restaurar vehículo
+router.post('/:id/restore', authenticate, validateVehicleId, validate, ctrl.restore)
 
 module.exports = router

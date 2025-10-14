@@ -1,16 +1,23 @@
-// backend/src/routes/user.js
 const express = require('express');
 const router = express.Router();
 
 const { authenticate, isAdmin } = require('../middlewares/auth');
 const ctrl = require('../controllers/user');
+const validate = require('../middlewares/validate');
 
-// Sanidad: asegúrate de que todo son funciones
+const {
+  validateUserIdParam,
+  validateChangeRole,
+  validateUpdateUser
+} = require('../validators/userQueryValidator');
+
+// Seguridad: validar que todas las funciones estén bien importadas
 const mustBeFn = (fn, name) => {
   if (typeof fn !== 'function') {
     throw new Error(`[routes/user] "${name}" no es función. Revisa exports/imports.`);
   }
 };
+
 [
   ['authenticate', authenticate],
   ['isAdmin',      isAdmin],
@@ -21,19 +28,51 @@ const mustBeFn = (fn, name) => {
   ['updateUser',   ctrl.updateUser],
 ].forEach(([n, f]) => mustBeFn(f, n));
 
-// LISTAR (solo admin)
+// === RUTAS ===
+
+// ✅ LISTAR USUARIOS (solo admin)
 router.get('/', authenticate, isAdmin, ctrl.list);
 
-// CAMBIAR ROL
-router.put('/:id/role', authenticate, isAdmin, ctrl.changeRole);
+// ✅ CAMBIAR ROL DE USUARIO
+router.put(
+  '/:id/role',
+  authenticate,
+  isAdmin,
+  validateUserIdParam,
+  validateChangeRole,
+  validate,
+  ctrl.changeRole
+);
 
-//ACTUALIZAR A UN NUEVO USUARIO
-router.put('/:id', authenticate, isAdmin, ctrl.updateUser);
+// ✅ ACTUALIZAR USUARIO (campos opcionales)
+router.put(
+  '/:id',
+  authenticate,
+  isAdmin,
+  validateUserIdParam,
+  validateUpdateUser,
+  validate,
+  ctrl.updateUser
+);
 
-// SOFT DELETE
-router.delete('/:id', authenticate, isAdmin, ctrl.softDelete);
+// ✅ ELIMINAR USUARIO (soft delete)
+router.delete(
+  '/:id',
+  authenticate,
+  isAdmin,
+  validateUserIdParam,
+  validate,
+  ctrl.softDelete
+);
 
-// RESTORE
-router.post('/:id/restore', authenticate, isAdmin, ctrl.restore);
+// ✅ RESTAURAR USUARIO
+router.post(
+  '/:id/restore',
+  authenticate,
+  isAdmin,
+  validateUserIdParam,
+  validate,
+  ctrl.restore
+);
 
 module.exports = router;
