@@ -4,7 +4,7 @@
     <h2>Crear cuenta</h2>
 
     <form @submit.prevent="handleRegister" novalidate>
-      <div class="grid">
+      <div class="form-grid">
         <!-- Usuario -->
         <label class="field">
           <span>Usuario *</span>
@@ -393,24 +393,3 @@ const handleRegister = async () => {
 }
 </script>
 
-<style scoped>
-.register { max-width: 560px; margin: 40px auto; display: grid; gap: 14px; }
-.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-@media (max-width:  640px) { .grid { grid-template-columns: 1fr; } }
-.field { display: grid; gap: 6px; }
-.field input {
-  padding: 10px; border: 1px solid #ddd; border-radius: 8px; outline: none; transition: border-color .15s ease;
-}
-.field input:focus { border-color: #6b7280; }
-.field input.invalid { border-color: #dc2626; background: #fff7f7; color: #111;}
-.field-error { color: #b91c1c; font-size: 0.85rem; }
-.row { display: flex; gap: 10px; align-items: center; }
-.toggle { display: inline-flex; gap: 8px; align-items: center; cursor: pointer; }
-button { padding: 10px 12px; border: 0; border-radius: 8px; cursor: pointer; }
-button[disabled] { opacity: .6; cursor: not-allowed; }
-.error { color: #c0392b; margin-top: 6px; }
-.ok { color: #2ecc71; margin-top: 6px; }
-.muted { color: #666; font-size: 0.9rem; }
-.strength { height: 6px; background: #eee; border-radius: 6px; overflow: hidden; }
-.strength .bar { height: 100%; background: #60a5fa; transition: width .25s ease; }
-</style>

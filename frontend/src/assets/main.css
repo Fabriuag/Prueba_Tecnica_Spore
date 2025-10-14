@@ -37,11 +37,7 @@
 
 /* ===== Efectos Futurísticos ===== */
 @layer utilities {
-  /* Glass mejorado con efectos de barrido */
-  .glass {
-    @apply backdrop-blur-xl;
-    background-color: rgb(255 255 255 / 0.06);
-  }
+  .glass { @apply backdrop-blur-xl; background-color: rgb(255 255 255 / 0.06); }
 
   .glass-ultra {
     @apply backdrop-blur-xl;
@@ -60,18 +56,13 @@
     transition: left 0.6s ease;
     pointer-events: none;
   }
+  .glass-ultra:hover::before { left: 100%; }
 
-  .glass-ultra:hover::before {
-    left: 100%;
-  }
-
-  /* Efectos holográficos */
   .holographic {
     background: var(--hologram);
     background-size: 200% 200%;
     animation: hologram 4s ease-in-out infinite;
   }
-
   .holographic-text, .brand-gradient-text {
     background: var(--hologram);
     background-size: 200% 200%;
@@ -80,13 +71,11 @@
     color: transparent;
     animation: hologram 3s ease-in-out infinite;
   }
-
   @keyframes hologram {
     0%, 100% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
   }
 
-  /* Bordes de neón */
   .neon-border {
     border: 2px solid transparent;
     background: linear-gradient(45deg, rgba(28,210,198,0.3), rgba(92,77,204,0.3)) border-box;
@@ -96,17 +85,11 @@
     mask-composite: exclude;
     animation: neon-pulse var(--pulse-duration) ease-in-out infinite alternate;
   }
-
   @keyframes neon-pulse {
-    from { 
-      box-shadow: 0 0 5px rgba(28,210,198,0.3), inset 0 0 5px rgba(28,210,198,0.1); 
-    }
-    to { 
-      box-shadow: var(--cyber-glow), inset 0 0 10px rgba(28,210,198,0.2); 
-    }
+    from { box-shadow: 0 0 5px rgba(28,210,198,0.3), inset 0 0 5px rgba(28,210,198,0.1); }
+    to { box-shadow: var(--cyber-glow), inset 0 0 10px rgba(28,210,198,0.2); }
   }
 
-  /* Grid cyberpunk */
   .cyber-grid {
     background-image: 
       linear-gradient(rgba(28,210,198,0.03) 1px, transparent 1px),
@@ -114,33 +97,19 @@
     background-size: 20px 20px;
     animation: grid-shift 10s linear infinite;
   }
-
   @keyframes grid-shift {
     0% { background-position: 0 0; }
     100% { background-position: 20px 20px; }
   }
 
-  /* Efectos de flotación */
-  .floating {
-    animation: float 6s ease-in-out infinite;
-  }
-
-  .floating-delayed {
-    animation: float 6s ease-in-out infinite;
-    animation-delay: 2s;
-  }
-
+  .floating { animation: float 6s ease-in-out infinite; }
+  .floating-delayed { animation: float 6s ease-in-out infinite; animation-delay: 2s; }
   @keyframes float {
     0%, 100% { transform: translateY(0px); }
     50% { transform: translateY(-10px); }
   }
 
-  /* Data stream effect */
-  .data-stream {
-    position: relative;
-    overflow: hidden;
-  }
-
+  .data-stream { position: relative; overflow: hidden; }
   .data-stream::after {
     content: '';
     position: absolute;
@@ -151,17 +120,12 @@
     z-index: -1;
     border-radius: inherit;
   }
-
   @keyframes data-flow {
     0% { background-position: 0% 50%; }
     100% { background-position: 400% 50%; }
   }
 
-  /* Partículas de fondo */
-  .particle-bg {
-    position: relative;
-  }
-
+  .particle-bg { position: relative; }
   .particle-bg::before {
     content: '';
     position: absolute;
@@ -175,7 +139,6 @@
     pointer-events: none;
     z-index: -1;
   }
-
   @keyframes particle-float {
     0% { background-position: 0% 0%; opacity: 0; }
     10% { opacity: 1; }
@@ -186,7 +149,6 @@
 
 /* ===== Componentes Mejorados ===== */
 @layer components {
-  /* Contenedor y cabecera */
   .container { @apply max-w-6xl mx-auto p-4 sm:p-6 lg:p-8; }
   .header { @apply flex flex-col gap-3 md:flex-row md:items-center md:justify-between; }
   .title  { @apply text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight; }
@@ -196,10 +158,8 @@
   .section { @apply mt-6 md:mt-8; }
   .section-title { @apply text-base sm:text-lg font-semibold text-slate-100 mb-3; }
 
-  /* Grids cards mejorados */
   .cards-grid { @apply grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4; }
 
-  /* Cards con efectos mejorados */
   .card { 
     @apply glass rounded-2xl p-4 sm:p-5 shadow-soft ring-1 ring-white transition-all duration-300; 
     --tw-ring-opacity: 0.10; 
@@ -220,7 +180,6 @@
     box-shadow: 0 20px 40px rgba(28,210,198,0.15);
   }
 
-  /* Listado mejorado */
   .list { @apply flex flex-col gap-3 mt-3; }
   .list-item {
     @apply glass rounded-2xl p-4 shadow-sm ring-1 ring-white transition-all duration-300
@@ -237,7 +196,7 @@
   .error { @apply text-rose-400; }
   .ok    { @apply text-emerald-400; }
 
-  /* Botones futurísticos */
+  /* Botones */
   .btn {
     @apply inline-flex items-center justify-center gap-2 rounded-xl
            px-4 py-2 text-sm md:text-[0.95rem] font-medium
@@ -247,40 +206,8 @@
     background-color: rgb(255 255 255 / 0.05);
     color: rgb(241 245 249);
   }
-  .btn:hover { 
-    background-color: rgb(255 255 255 / 0.10); 
-    transform: translateY(-1px);
-  }
+  .btn:hover { background-color: rgb(255 255 255 / 0.10); transform: translateY(-1px); }
   .btn:active { transform: scale(0.98); }
-
-  /* Botón morphing */
-  .btn-morphing {
-    @apply btn;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .btn-morphing::before {
-    content: '';
-    position: absolute;
-    top: 50%; left: 50%;
-    width: 0; height: 0;
-    background: radial-gradient(circle, rgba(28,210,198,0.3) 0%, transparent 70%);
-    transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
-    transform: translate(-50%, -50%);
-    border-radius: 50%;
-  }
-
-  .btn-morphing:hover::before {
-    width: 300px; height: 300px;
-  }
-
-  .btn-morphing:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(28,210,198,0.2);
-  }
-
-
 
   .btn--primary { @apply border-transparent text-white; background-color: #5C4DCC; }
   .btn--primary:hover { background-color: #7A6CE6; }
@@ -302,29 +229,11 @@
     --tw-ring-color: #1CD2C6; 
     --tw-ring-opacity: 0.20;
   }
-
   input:focus, select:focus, textarea:focus {
     border-color: color-mix(in srgb, #1CD2C6 60%, transparent);
     background-color: rgb(255 255 255 / 0.08);
     transform: translateY(-1px);
   }
-
-  /* Input cyber con efectos */
-  .input-cyber {
-    @apply relative;
-  }
-
-  .input-cyber input {
-    background: linear-gradient(145deg, rgba(0,0,0,0.2), rgba(28,210,198,0.05));
-    border: 2px solid transparent;
-    background-clip: padding-box;
-  }
-
-  .input-cyber input:focus {
-    background: linear-gradient(145deg, rgba(0,0,0,0.3), rgba(28,210,198,0.1));
-    box-shadow: 0 0 20px rgba(28,210,198,0.2);
-  }
-
   input.invalid, select.invalid, textarea.invalid {
     @apply focus:ring-rose-400;
     --tw-ring-opacity: 0.20;
@@ -332,7 +241,6 @@
     border-color: rgb(244 63 94 / 0.60);
   }
 
-  /* Cajas auth mejoradas */
   .login, .register {
     @apply w-full max-w-md sm:max-w-lg md:max-w-xl mx-auto
            mt-10 sm:mt-12 md:mt-16 glass-ultra p-5 md:p-6 lg:p-8
@@ -340,16 +248,50 @@
     --tw-ring-opacity: 0.10;
   }
 
-  /* Badge mejorado */
-  .badge {
-    @apply inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium;
-    background-color: rgb(92 77 204 / 0.20);
-    color: #1CD2C6;
-    border: 1px solid rgb(28 210 198 / 0.3);
+  /* ===== Estilos para RegisterView.vue ===== */
+  .register { @apply w-full max-w-xl mx-auto mt-10 sm:mt-12 md:mt-16 grid gap-4 p-6 glass-ultra rounded-2xl shadow-soft; }
+  .form-grid { @apply grid grid-cols-2 gap-3; }
+  @media (max-width: 640px) { .form-grid { @apply grid-cols-1; } }
+
+  .field input { @apply px-3 py-2 border border-white/15 rounded-xl text-slate-100 placeholder-slate-400 bg-white/5 transition duration-300 focus:outline-none focus:ring-4 focus:ring-cyan-400/20; }
+  .field input:focus { @apply border-cyan-400/60 bg-white/10; }
+  .field input.invalid { @apply border-rose-500 bg-rose-50/10 text-white; }
+  .field-error { @apply text-rose-400 text-sm mt-0.5; }
+  .row { @apply flex gap-3 items-center; }
+  .toggle { @apply inline-flex gap-2 items-center cursor-pointer; }
+  button { @apply px-4 py-2 rounded-xl cursor-pointer transition-all duration-300; }
+  button[disabled] { @apply opacity-60 cursor-not-allowed; }
+  .error { @apply text-rose-400 mt-2; }
+  .ok { @apply text-emerald-400 mt-2; }
+  .muted { @apply text-slate-400 text-sm; }
+  .strength { @apply h-1.5 bg-slate-700/60 rounded-lg overflow-hidden; }
+  .strength .bar { @apply h-full bg-sky-400 transition-all duration-300; }
+
+  /* ===== Campo de formulario (nuevo bloque del <style scoped>) ===== */
+  .field-group {
+    display: grid;
+    gap: 6px;
   }
 
-  .badge-holographic {
-    @apply badge holographic text-white;
+  .field-group input,
+  .field-group select {
+    @apply text-slate-100 placeholder-slate-400 bg-white/5 transition-colors duration-200 ease-in-out
+           focus:outline-none focus:ring-4 focus:ring-cyan-400/20;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    transition: border-color .15s ease;
+  }
+
+  .field-group input:focus,
+  .field-group select:focus {
+    border-color: #6b7280;
+  }
+
+  .field-group input.invalid {
+    border-color: #dc2626;
+    background: #fff;
+    color: #111;
   }
 }
 
@@ -359,7 +301,6 @@
     .subtitle { @apply text-base; }
     .section-title { @apply text-xl; }
   }
-
   .actions { @apply flex-wrap; }
   @screen md { .actions { @apply flex-nowrap; } }
 
@@ -390,7 +331,6 @@
     animation: none;
   }
 }
-
 @media (max-width: 768px) {
   .glass-ultra { backdrop-filter: blur(15px); }
   .btn-morphing:hover { transform: translateY(-1px) scale(1.01); }

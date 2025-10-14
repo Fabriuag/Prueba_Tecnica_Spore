@@ -142,7 +142,3 @@ const onSubmit = async () => {
   }
 }
 </script>
-
-<style scoped>
-.min-h-screen { min-height: 100vh; }
-</style>

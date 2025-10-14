@@ -453,27 +453,3 @@ watch(() => route.query, () => {
 
 onMounted(fetchUsers)
 </script>
-
-<style scoped>
-.field {
-  display: grid;
-  gap: 6px;
-}
-.field input,
-.field select {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  outline: none;
-  transition: border-color .15s ease;
-}
-.field input:focus,
-.field select:focus {
-  border-color: #6b7280;
-}
-.field input.invalid {
-  border-color: #dc2626;
-  background: #fff;
-  color:#111;
-}
-</style>

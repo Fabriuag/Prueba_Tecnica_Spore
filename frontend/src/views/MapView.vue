@@ -132,6 +132,4 @@ onBeforeUnmount(() => {
 </script>
 
 
-<style scoped>
-.map-wrapper { margin-top: 16px; }
-</style>
+
