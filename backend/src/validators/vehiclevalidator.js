@@ -16,7 +16,7 @@ const validateCreateVehicle = [
   body('color').optional().isString().withMessage('Color inválido'),
   body('lat').optional().isFloat({ min: -90, max: 90 }).withMessage('Latitud inválida'),
   body('lon').optional().isFloat({ min: -180, max: 180 }).withMessage('Longitud inválida'),
-  body('userId').optional().isInt().withMessage('El ID de usuario debe ser entero'),
+  body('userId').optional().isInt().withMessage('El ID de usuario debe ser numero entero'),
 ]
 
 const validateUpdateVehicle = [
