@@ -15,8 +15,12 @@ const toPoint = (lat, lon) =>
 
 // Guardar imagen con hash SHA256 para evitar duplicados
 const saveImageAndGetPath = (fileBuffer, mimetype) => {
+  if (!fileBuffer || !Buffer.isBuffer(fileBuffer)) {
+    throw new Error('Invalid or missing file buffer')
+  }
+
   const hash = crypto.createHash('sha256').update(fileBuffer).digest('hex')
-  const ext = mimetype.split('/')[1] || 'jpg'
+  const ext = mimetype?.split?.('/')[1] || 'jpg'  // Usa 'jpg' por defecto si mimetype falla
   const filename = `${hash}.${ext}`
   const folder = path.join(__dirname, '..', '..', 'uploads', 'images')
   const filePath = path.join(folder, filename)
@@ -26,18 +30,17 @@ const saveImageAndGetPath = (fileBuffer, mimetype) => {
     fs.mkdirSync(folder, { recursive: true })
   }
 
-  // Solo guardar si no existe
+  // Guardar imagen si no existe ya
   if (!fs.existsSync(filePath)) {
     fs.writeFileSync(filePath, fileBuffer)
   }
 
-  // Devuelve la ruta relativa que se guarda en la DB
   return `/uploads/images/${filename}`
 }
 
+
 // ===== Controladores =====
 
-// LISTAR VEHÍCULOS
 const list = async (req, res) => {
   try {
     const page = Math.max(parseInt(req.query.page || '1', 10), 1)
@@ -76,22 +79,18 @@ const list = async (req, res) => {
   }
 }
 
-// OBTENER VEHÍCULO POR ID
 const getById = async (req, res) => {
   const v = await Vehicle.findByPk(req.params.id, {
     include: [{ model: User, as: 'User', attributes: ['id', 'username', 'role', 'firstName', 'lastName', 'email'] }],
     paranoid: false
   })
   if (!v) return res.status(404).json({ error: 'Vehicle not found' })
-
   if (!(req.user?.role === 'admin' || req.user?.id === v.userId)) {
     return res.status(403).json({ error: 'Forbidden' })
   }
-
   res.json(v)
 }
 
-// CREAR VEHÍCULO
 const create = async (req, res) => {
   try {
     const file = req.file
@@ -127,7 +126,6 @@ const create = async (req, res) => {
   }
 }
 
-// ACTUALIZAR VEHÍCULO
 const update = async (req, res) => {
   try {
     const v = await Vehicle.findByPk(req.params.id, { paranoid: false })
@@ -186,7 +184,6 @@ const update = async (req, res) => {
   }
 }
 
-// ELIMINAR VEHÍCULO (soft o hard)
 const remove = async (req, res) => {
   try {
     const v = await Vehicle.findByPk(req.params.id, { paranoid: false })
@@ -211,7 +208,6 @@ const remove = async (req, res) => {
   }
 }
 
-// RESTAURAR VEHÍCULO
 const restore = async (req, res) => {
   try {
     const v = await Vehicle.findByPk(req.params.id, { paranoid: false })
@@ -233,7 +229,6 @@ const restore = async (req, res) => {
   }
 }
 
-// SERVIR IMAGEN (solo admins o dueño)
 const image = async (req, res) => {
   try {
     const v = await Vehicle.findByPk(req.params.id, { attributes: ['image', 'userId'], paranoid: false })
