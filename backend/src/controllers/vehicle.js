@@ -102,7 +102,6 @@ const create = async (req, res) => {
     const lon = req.body.lon ?? req.body.longitud
     let { userId } = req.body
 
-    if (!plates || !brand) return res.status(400).json({ error: 'plates and brand are required' })
     if (!req.user) return res.status(401).json({ error: 'Unauthorized' })
 
     if (req.user.role !== 'admin') userId = req.user.id
@@ -231,14 +230,20 @@ const restore = async (req, res) => {
 
 const image = async (req, res) => {
   try {
-    const v = await Vehicle.findByPk(req.params.id, { attributes: ['image', 'userId'], paranoid: false })
+    const v = await Vehicle.findByPk(req.params.id, {
+      attributes: ['image', 'userId'],
+      paranoid: false
+    })
     if (!v || !v.image) return res.status(404).end()
 
     if (!(req.user?.role === 'admin' || req.user?.id === v.userId)) {
       return res.status(403).json({ error: 'Forbidden' })
     }
 
-    const imagePath = path.join(__dirname, '..', '..', v.image)
+    // Quita la barra inicial si la ruta la tiene
+    const imageRelativePath = v.image.replace(/^\/+/, '')  // ✅ Elimina los "/" iniciales
+    const imagePath = path.join(__dirname, '..', '..', imageRelativePath)
+
     if (!fs.existsSync(imagePath)) return res.status(404).end()
 
     res.set('Cache-Control', 'private, max-age=60')
@@ -248,5 +253,6 @@ const image = async (req, res) => {
     return res.status(500).json({ error: 'Failed to load image' })
   }
 }
+
 
 module.exports = { list, getById, create, update, remove, restore, image }

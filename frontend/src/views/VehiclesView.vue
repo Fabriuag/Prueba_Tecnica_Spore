@@ -451,13 +451,8 @@ const loadImage = async (id, silent = false) => {
     if (!silent) console.warn('No image for vehicle', id)
   }
 }
-
 const createCar = async () => {
   createError.value = ''
-  if (!form.value.plates || !form.value.brand) {
-    createError.value = 'plates y brand son requeridos'
-    return
-  }
   try {
     creating.value = true
     const fd = new FormData()
@@ -468,19 +463,28 @@ const createCar = async () => {
     if (form.value.lat != null) fd.append('lat', String(form.value.lat))
     if (form.value.lon != null) fd.append('lon', String(form.value.lon))
 
-    if (isAdmin.value) fd.append('userId', form.value.userId) // '' => sin propietario
+    if (isAdmin.value) fd.append('userId', form.value.userId)
     if (file.value) fd.append('image', file.value)
 
-    await api.post('/vehicles', fd, { headers: { 'Content-Type': 'multipart/form-data' } })
+    await api.post('/vehicles', fd, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+
     resetForm()
     page.value = 1
     await fetchVehicles()
   } catch (e) {
-    createError.value = e?.response?.data?.error || 'Error al crear'
+    // ⚠️ Captura de errores de validación
+    if (e?.response?.data?.errors) {
+      createError.value = e.response.data.errors.map(err => err.msg).join(' | ')
+    } else {
+      createError.value = e?.response?.data?.error || 'Error al crear'
+    }
   } finally {
     creating.value = false
   }
 }
+
 
 const removeCar = async (id, hard = false) => {
   const label = hard ? 'PERMANENTEMENTE' : 'lógicamente'
