@@ -2,6 +2,7 @@
 const { Server } = require('socket.io')
 const jwt = require('jsonwebtoken')
 const { Vehicle } = require('../models')
+require('dotenv').config();
 
 // helper para point (lon, lat) en PostGIS
 const toPoint = (lat, lon) =>
@@ -9,7 +10,7 @@ const toPoint = (lat, lon) =>
 
 module.exports = function attachSocket(server) {
   const io = new Server(server, {
-    cors: { origin: ['http://localhost:5173'], credentials: true }
+    cors: { origin: [process.env.CLIENT_URL], credentials: true }
   })
 
   // Autenticación de sockets con el mismo JWT

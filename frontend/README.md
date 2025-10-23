@@ -13,6 +13,7 @@ Consume los endpoints REST del backend y permite a los usuarios:
 ## ⚙️ Tecnologías Utilizadas
 
 - **Vue 3** + Composition API
+- **Node.js** v24.6.0
 - **Vite** como bundler moderno
 - **TailwindCSS** para estilos (opcional)
 - **SweetAlert2** para alertas amigables

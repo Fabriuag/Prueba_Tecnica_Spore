@@ -8,8 +8,12 @@ const validate = require('../middlewares/validate');
 const {
   validateUserIdParam,
   validateChangeRole,
-  validateUpdateUser
-} = require('../validators/userQueryValidator');
+  validateUpdateUser,
+  validateListUsersQuery
+} = require('../validators/userQueryValidator')
+
+router.get('/', authenticate, isAdmin, validateListUsersQuery, validate, ctrl.list)
+
 
 // Seguridad: validar que todas las funciones estén bien importadas
 const mustBeFn = (fn, name) => {

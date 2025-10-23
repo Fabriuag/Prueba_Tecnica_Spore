@@ -1,6 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const { register, login, simpleReset } = require('../controllers/auth');
+const {
+  validateRegister,
+  validateLogin,
+  validateSimpleReset
+} = require('../validators/userQueryValidator')
+const validate = require('../middlewares/validate')
+
+
+
+
 
 /**
  * @swagger
@@ -22,7 +32,7 @@ const { register, login, simpleReset } = require('../controllers/auth');
  *       401:
  *         description: Credenciales inválidas
  */
-router.post('/login', login);
+router.post('/login', validateLogin, validate, login)
 
 /**
  * @swagger
@@ -50,11 +60,11 @@ router.post('/login', login);
  *             schema: { $ref: '#/components/schemas/LoginResponse' }
  *       400: { description: Error de validación }
  */
-router.post('/register', register);
+router.post('/register', validateRegister, validate, register)
 
 /**
  * Nueva ruta: cambio simple de contraseña
  */
-router.post('/simple-reset', simpleReset);
+router.post('/simple-reset', validateSimpleReset, validate, simpleReset)
 
 module.exports = router;
