@@ -12,7 +12,7 @@
       <div class="actions">
         <button class="btn" @click="refreshAll">Refrescar</button>
         <router-link class="btn" to="/vehicles">Vehículos</router-link>
-        <router-link class="btn" to="/mapa">Mapa</router-link>
+        <router-link class="btn" to="/map">Mapa</router-link>
         <router-link class="btn" v-if=isAdmin to="/users">Usuarios</router-link>
         <button class="btn" @click="logoutConfirm">Cerrar sesión</button>
       </div>
