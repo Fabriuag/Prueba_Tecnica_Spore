@@ -262,6 +262,7 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
 import api from '@/services/api'
+import Swal from 'sweetalert2'
 
 /* sesión/rol */
 const me = ref(null)
@@ -405,11 +406,14 @@ const saveEdit = async () => {
     const oldUrl = imageUrlById.value[editId.value]
     if (oldUrl) { URL.revokeObjectURL(oldUrl); objectUrls.delete(oldUrl) }
     await loadImage(editId.value, true)
+    Swal.fire('Éxito', 'Cambios guardados correctamente.', 'success')
   } catch (e) {
     editError.value = e?.response?.data?.error || 'No se pudo guardar cambios'
+    Swal.fire('Error', editError.value, 'error')
   } finally {
     savingEdit.value = false
   }
+  
 }
 
 /* posición manual */
@@ -473,12 +477,15 @@ const createCar = async () => {
     resetForm()
     page.value = 1
     await fetchVehicles()
+    Swal.fire('Vehículo creado', 'El nuevo vehículo fue registrado con éxito.', 'success')
   } catch (e) {
     // ⚠️ Captura de errores de validación
     if (e?.response?.data?.errors) {
       createError.value = e.response.data.errors.map(err => err.msg).join(' | ')
+      Swal.fire('Error', createError.value, 'error')
     } else {
       createError.value = e?.response?.data?.error || 'Error al crear'
+
     }
   } finally {
     creating.value = false
@@ -487,17 +494,38 @@ const createCar = async () => {
 
 
 const removeCar = async (id, hard = false) => {
-  const label = hard ? 'PERMANENTEMENTE' : 'lógicamente'
-  if (!confirm(`¿Eliminar ${label} este vehículo?`)) return
+  const result = await Swal.fire({
+    title: `¿Estás seguro?`,
+    text: hard
+      ? 'Este vehículo será eliminado PERMANENTEMENTE.'
+      : 'Este vehículo será eliminado lógicamente.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+  })
+
+  if (!result.isConfirmed) return
+
   try {
     await api.delete(`/vehicles/${id}`, { params: hard ? { force: true } : {} })
     if (vehicles.value.length === 1 && page.value > 1) page.value -= 1
     await fetchVehicles()
     const url = imageUrlById.value[id]
-    if (url) { URL.revokeObjectURL(url); objectUrls.delete(url) }
-    const copy = { ...imageUrlById.value }; delete copy[id]; imageUrlById.value = copy
+    if (url) {
+      URL.revokeObjectURL(url)
+      objectUrls.delete(url)
+    }
+    const copy = { ...imageUrlById.value }
+    delete copy[id]
+    imageUrlById.value = copy
+
+    Swal.fire('Eliminado', 'Vehículo eliminado correctamente.', 'success')
   } catch (e) {
     error.value = e?.response?.data?.error || 'Error al eliminar'
+    Swal.fire('Error', error.value, 'error')
   }
 }
 
