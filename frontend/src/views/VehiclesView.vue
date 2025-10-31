@@ -23,19 +23,19 @@
         <div class="cards-grid">
           <div>
             <div class="stat-label">Plates</div>
-            <input class="btn" style="width:100%" v-model.trim="form.plates" type="text" />
+            <input class="btn" style="width:100%" v-model.trim="form.plates" type="text" maxlength="10" />
           </div>
           <div>
             <div class="stat-label">Brand</div>
-            <input class="btn" style="width:100%" v-model.trim="form.brand" type="text" />
+            <input class="btn" style="width:100%" v-model.trim="form.brand" type="text" maxlength="30"/>
           </div>
           <div>
             <div class="stat-label">Model</div>
-            <input class="btn" style="width:100%" v-model.trim="form.model" type="text" />
+            <input class="btn" style="width:100%" v-model.trim="form.model" type="text" maxlength="30"/>
           </div>
           <div>
             <div class="stat-label">Color</div>
-            <input class="btn" style="width:100%" v-model.trim="form.color" type="text" />
+            <input class="btn" style="width:100%" v-model.trim="form.color" type="text" maxlength="20"/>
           </div>
           <div>
             <div class="stat-label">Image</div>
@@ -44,11 +44,11 @@
           </div>
           <div>
             <div class="stat-label">Lat</div>
-            <input class="btn" style="width:100%" v-model.number="form.lat" type="number" step="0.0001" />
+            <input class="btn" style="width:100%" v-model.number="form.lat" type="number" step="0.0001" value="20.7900" />
           </div>
           <div>
             <div class="stat-label">Lon</div>
-            <input class="btn" style="width:100%" v-model.number="form.lon" type="number" step="0.0001" />
+            <input class="btn" style="width:100%" v-model.number="form.lon" type="number" step="0.0001" value="-103.4700"/>
           </div>
 
           <!-- Owner (solo admin) -->
