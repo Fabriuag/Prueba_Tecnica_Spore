@@ -86,11 +86,6 @@
             <span v-else>Ingresando…</span>
           </button>
 
-          <!-- Enlace para recuperar contraseña -->
-          <router-link to="/forgot-password" class="text-sm text-blue-600 hover:underline text-center block mt-2">
-            ¿Olvidaste tu contraseña?
-          </router-link>
-
 
           <!-- Mensaje de error general -->
           <p v-if="error" class="error mt-1">{{ error }}</p>

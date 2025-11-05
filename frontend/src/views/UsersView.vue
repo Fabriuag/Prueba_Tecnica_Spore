@@ -8,6 +8,9 @@
       </div>
       <div class="actions space-x-2">
         <router-link class="btn" to="/dashboard">Volver</router-link>
+        <router-link to="/forgot-password" class="btn">
+            Restablecer Contraseña
+          </router-link>
         <button class="btn" @click="fetchUsers">Refrescar</button>
         <button class="btn btn--primary" @click="toggleForm">
           + Registrar Usuario
