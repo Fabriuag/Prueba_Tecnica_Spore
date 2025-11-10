@@ -197,7 +197,7 @@ const router = useRouter()
 const USERNAME_MAX = 32
 const EMAIL_MAX = 254
 const NAME_MAX = 50
-const PHONE_MAX = 24
+const PHONE_MAX = 15
 const PASSWORD_MAX = 72
 
 /* ===== Estados ===== */
