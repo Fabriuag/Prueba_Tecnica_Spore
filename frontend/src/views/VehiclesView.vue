@@ -44,12 +44,13 @@
           </div>
           <div>
             <div class="stat-label">Lat</div>
-            <input class="btn" style="width:100%" v-model="form.lat" type="text" maxlength="8" inputmode="decimal" />
+            <input class="btn" style="width:100%" v-model="form.lat" type="text" maxlength="8" inputmode="decimal" @input="onlyNumber('lat')" />
           </div>
           <div>
             <div class="stat-label">Lon</div>
-            <input class="btn" style="width:100%" v-model="form.lon" type="text" maxlength="8" inputmode="decimal"/>
+            <input class="btn" style="width:100%" v-model="form.lon" type="text" maxlength="8" inputmode="decimal" @input="onlyNumber('lon')"/>
           </div>
+
 
           <!-- Owner (solo admin) -->
           <div v-if="isAdmin">
@@ -301,7 +302,7 @@ const placeholderUrl =
 const fileInput = ref(null)
 const form = ref({
   plates: '', brand: '', model: '', color: '',
-  lat: null, lon: null, userId: '' // '' = sin propietario
+  lat: '20.7415', lon: '-103.3600', userId: '' // '' = sin propietario
 })
 const file = ref(null)
 const fileName = ref('')
@@ -309,7 +310,7 @@ const creating = ref(false)
 const createError = ref('')
 
 const resetForm = () => {
-  form.value = { plates: '', brand: '', model: '', color: '', lat: null, lon: null, userId: '' }
+  form.value = { plates: '', brand: '', model: '', color: '', lat: '20.7415', lon: '-103.3600', userId: '' }
   file.value = null
   fileName.value = ''
   if (fileInput.value) fileInput.value.value = '' // 🔹 Limpia el input file del DOM
@@ -329,6 +330,17 @@ const savingEdit = ref(false)
 const editError = ref('')
 
 const canEdit = (car) => !car.deletedAt && (isAdmin.value || car.userId === myId.value)
+
+// Permite solo números, punto y signo negativo
+const onlyNumber = (field) => {
+  const raw = form.value[field]
+  const filtered = raw
+    .replace(/[^\d.-]/g, '')        // solo dígitos, punto y guion
+    .replace(/(?!^)-/g, '')         // solo un signo negativo al inicio
+    .replace(/(\..*?)\..*/g, '$1')  // solo un punto decimal
+
+  form.value[field] = filtered
+}
 
 const openEdit = (car) => {
   editId.value = car.id
