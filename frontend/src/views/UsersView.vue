@@ -243,7 +243,7 @@ const errors = ref({
 })
 
 function validateUsername() {
-  const v = form.value.username
+  const v = form.value.username.trim()
   if (!v) return errors.value.username = 'El usuario es requerido'
   if (v.length < 3) return errors.value.username = 'Mínimo 3 caracteres'
   if (v.length > USERNAME_MAX) return errors.value.username = `Máximo ${USERNAME_MAX} caracteres`
@@ -252,7 +252,7 @@ function validateUsername() {
 }
 
 function validateEmail() {
-  const v = form.value.email
+  const v = form.value.email.trim()
   if (!v) return errors.value.email = 'El email es requerido'
   if (v.length > EMAIL_MAX) return errors.value.email = `Máx. ${EMAIL_MAX} caracteres`
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -261,10 +261,10 @@ function validateEmail() {
 }
 
 function validateFirstName() {
-  const v = form.value.firstName
+  const v = form.value.firstName.trim()
   if (!v) return errors.value.firstName = 'El nombre es requerido'
   if (v.length > NAME_MAX) return errors.value.firstName = `Máx. ${NAME_MAX} caracteres`
-  if (!/^[A-Za-zÀ-ÿ\u00f1\u00d1' -]{2,}$/.test(v)) return errors.value.firstName = 'Nombre inválido'
+  if (!/^[A-Za-zÀ-ÿ\u00f1\u00d1' .-]{2,}$/.test(v)) return errors.value.firstName = 'Nombre inválido'
   errors.value.firstName = ''
 }
 
@@ -272,12 +272,12 @@ function validateLastName() {
   const v = form.value.lastName
   if (!v) return errors.value.lastName = 'El apellido es requerido'
   if (v.length > NAME_MAX) return errors.value.lastName = `Máx. ${NAME_MAX} caracteres`
-  if (!/^[A-Za-zÀ-ÿ\u00f1\u00d1' -]{2,}$/.test(v)) return errors.value.lastName = 'Apellido inválido'
+  if (!/^[A-Za-zÀ-ÿ\u00f1\u00d1' .-]{2,}$/.test(v)) return errors.value.lastName = 'Apellido inválido'
   errors.value.lastName = ''
 }
 
 function validatePhone() {
-  const v = form.value.phone
+  const v = form.value.phone.trim()
   if (!v) return errors.value.phone = ''
   if (v.length > PHONE_MAX) return errors.value.phone = `Máx. ${PHONE_MAX} caracteres`
   if (!/^[\d\s()+\-\.]+$/.test(v)) return errors.value.phone = 'Teléfono inválido'
