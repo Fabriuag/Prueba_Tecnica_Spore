@@ -39,16 +39,16 @@
           </div>
           <div>
             <div class="stat-label">Image</div>
-            <input ref="fileInput" type="file" @change="onFile" accept="image/*" />
+            <input type="file" @change="onFile" accept="image/*" />
             <div v-if="fileName" class="muted" style="margin-top:6px;">{{ fileName }}</div>
           </div>
           <div>
             <div class="stat-label">Lat</div>
-            <input class="btn" style="width:100%" v-model.number="form.lat" type="number" step="0.0001" />
+            <input class="btn" style="width:100%" v-model="form.lat" type="text" maxlength="8" inputmode="decimal" />
           </div>
           <div>
             <div class="stat-label">Lon</div>
-            <input class="btn" style="width:100%" v-model.number="form.lon" type="number" step="0.0001"/>
+            <input class="btn" style="width:100%" v-model="form.lon" type="text" maxlength="8" inputmode="decimal"/>
           </div>
 
           <!-- Owner (solo admin) -->
@@ -301,7 +301,7 @@ const placeholderUrl =
 const fileInput = ref(null)
 const form = ref({
   plates: '', brand: '', model: '', color: '',
-  lat: 20.7900, lon: -103.4700, userId: '' // '' = sin propietario
+  lat: null, lon: null, userId: '' // '' = sin propietario
 })
 const file = ref(null)
 const fileName = ref('')
@@ -465,11 +465,12 @@ const createCar = async () => {
     creating.value = true
     const fd = new FormData()
     fd.append('plates', form.value.plates.trim())
-    fd.append('brand', form.value.brand.trim())
+    fd.append('brand',  form.value.brand.trim())
     if (form.value.model) fd.append('model', form.value.model.trim())
     if (form.value.color) fd.append('color', form.value.color.trim())
     if (form.value.lat != null) fd.append('lat', String(form.value.lat))
     if (form.value.lon != null) fd.append('lon', String(form.value.lon))
+
     if (isAdmin.value) fd.append('userId', form.value.userId)
     if (file.value) fd.append('image', file.value)
 
@@ -478,16 +479,17 @@ const createCar = async () => {
     })
 
     resetForm()
-    if (fileInput.value) fileInput.value.value = '' // 🔹 Limpia el input de imagen
     page.value = 1
     await fetchVehicles()
     Swal.fire('Vehículo creado', 'El nuevo vehículo fue registrado con éxito.', 'success')
   } catch (e) {
+    // ⚠️ Captura de errores de validación
     if (e?.response?.data?.errors) {
       createError.value = e.response.data.errors.map(err => err.msg).join(' | ')
       Swal.fire('Error', createError.value, 'error')
     } else {
       createError.value = e?.response?.data?.error || 'Error al crear'
+
     }
   } finally {
     creating.value = false

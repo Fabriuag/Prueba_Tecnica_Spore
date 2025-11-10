@@ -13,6 +13,7 @@ const authRoutes = require('./src/routes/auth')
 const adminRoutes = require('./src/routes/admin')
 const vehicleRoutes = require('./src/routes/vehicle')
 const userRoutes = require('./src/routes/user')
+const basicRoutes = require('./src/routes/basic');
 
 const path = require('path')
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -22,9 +23,10 @@ app.use('/api/auth', authRoutes)
 app.use('/api/admin', adminRoutes)
 app.use('/api/vehicles', vehicleRoutes)
 app.use('/api/users', userRoutes)
+app.use('/api', basicRoutes);
 
 app.use('/api/automoviles', vehicleRoutes) // alias temporal
-app.get('/health', (_req, res) => res.json({ ok: true }))
+
 
 // Swagger
 const swaggerUi = require('swagger-ui-express')

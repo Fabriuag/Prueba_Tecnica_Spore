@@ -8,6 +8,7 @@ import MapView from '@/views/MapView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import ForgotPasswordView from '@/views/ForgotPasswordView.vue'
 
+
 const routes = [
   {
     path: '/',
